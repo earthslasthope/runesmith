@@ -1,4 +1,5 @@
 import Express from 'express';
+import path from 'path';
 import React from 'react'
 import { renderToString } from 'react-dom/server';
 import { createStore } from 'redux';
@@ -8,6 +9,8 @@ import rootReducer from '../client/state/reducers/root';
 
 const app = Express();
 const port = 1337;
+
+app.use('/build', Express.static(path.join(__dirname, '../client')));
 
 app.use((req, res) => {
     const store = createStore(rootReducer);
@@ -35,7 +38,7 @@ app.use((req, res) => {
                 '\\u003c'
             )}
             </script>
-            <script src="/static/bundle.js"></script>
+            <script src="/build/main.js"></script>
         </body>
         </html>
     `;

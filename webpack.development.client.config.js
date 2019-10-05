@@ -1,10 +1,10 @@
 const path = require('path');
 
 module.exports = {
-    entry: './src/server/index.js',
+    entry: './src/client/components/app.js',
     mode: 'development',
     output: { 
-        path: path.resolve(__dirname, 'dist/server')
+        path: path.resolve(__dirname, 'dist/client')
     },
     module: {
         rules: [
@@ -17,9 +17,5 @@ module.exports = {
                 loader: 'babel-loader'
             }
         ]
-    },
-    node: {
-        __dirname: false
-    },
-    target: 'node'
+    }
 }
