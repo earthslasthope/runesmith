@@ -13,12 +13,24 @@
   "author": "Thordur Thordarson",
   "license": "ISC",
   "devDependencies": {
+    "@babel/cli": "^7.6.2",
+    "@babel/core": "^7.6.2",
+    "@babel/preset-env": "^7.6.2",
+    "@babel/preset-react": "^7.0.0",
+    "@types/node": "^12.7.11",
+    "@types/webpack": "^4.39.2",
+    "babel-loader": "^8.0.6",
+    "express": "^5.0.0-alpha.7",
     "ts-loader": "^6.2.0",
+    "ts-node": "^8.4.1",
     "typescript": "^3.6.3",
     "webpack": "^4.41.0",
     "webpack-cli": "^3.3.9"
   },
   "dependencies": {
-    "express": "^5.0.0-alpha.7"
+    "react": "^16.10.2",
+    "react-dom": "^16.10.2",
+    "react-redux": "^7.1.1",
+    "redux": "^4.0.4"
   }
 }
