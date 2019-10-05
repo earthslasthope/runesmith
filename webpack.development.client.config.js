@@ -1,7 +1,7 @@
 const path = require('path');
 
 module.exports = {
-    entry: './src/client/components/app.js',
+    entry: './src/client/startup.js',
     mode: 'development',
     output: { 
         path: path.resolve(__dirname, 'dist/client')

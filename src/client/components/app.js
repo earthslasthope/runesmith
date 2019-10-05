@@ -1,8 +1,16 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 
 const App = () => {
+    const [currentTime, setTime] = useState(new Date());
+
+    useEffect(() => {
+        window.setInterval(() => {
+            setTime(new Date());
+        }, 1000);
+    }, []);
+
     return <div>
-        TODO - Write an amazing React app in Express
+        The current date/time is {currentTime.toString()}
     </div>
 }
 
