@@ -2,6 +2,7 @@ import React from 'react';
 import { hydrate } from 'react-dom';
 import { createStore } from 'redux';
 import { Provider } from 'react-redux';
+import { BrowserRouter } from 'react-router-dom';
 import App from './components/app';
 import rootReducer from './state/reducers/root';
 
@@ -14,4 +15,10 @@ delete window.__PRELOADED_STATE__
 // Create Redux store with initial state
 const store = createStore(rootReducer, preloadedState)
 
-hydrate(<Provider store={store}><App /></Provider>, document.getElementById('root'));
+const AppRoot = () => <Provider store={store}>
+    <BrowserRouter>
+        <App />
+    </BrowserRouter>
+</Provider>
+
+hydrate(<AppRoot />, document.getElementById('root'));

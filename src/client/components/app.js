@@ -1,17 +1,21 @@
-import React, { useState, useEffect } from 'react';
+import React from 'react';
+import { Switch, Route } from 'react-router-dom';
+import Navigation from './navigation';
+import apps from '../../shared/app-structure';
+import * as pages from './pages';
 
 const App = () => {
-    const [currentTime, setTime] = useState(new Date());
-
-    useEffect(() => {
-        window.setInterval(() => {
-            setTime(new Date());
-        }, 1000);
-    }, []);
-
-    return <div>
-        The current date/time is {currentTime.toString()}
-    </div>
+    return <>
+        <Navigation />
+        <div className="main">
+            <Switch>
+                {apps.map(app => {
+                    const AppComponent = pages[app.identifier]; 
+                    return <Route path={`/${app.identifier}`} key={app.identifier} component={AppComponent} />
+                })}
+            </Switch>
+        </div>
+    </>
 }
 
 export default App;

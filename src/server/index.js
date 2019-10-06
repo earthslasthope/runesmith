@@ -4,6 +4,7 @@ import React from 'react'
 import { renderToString } from 'react-dom/server';
 import { createStore } from 'redux';
 import { Provider } from 'react-redux';
+import { StaticRouter } from 'react-router-dom';
 import App from '../client/components/app';
 import rootReducer from '../client/state/reducers/root';
 import apps from '../shared/app-structure';
@@ -48,10 +49,12 @@ const serveApp = (app) => (req, res) => {
             [app.identifier]: { serverData }
         });
         const initState = store.getState();
-    
+
         const reactHtml = renderToString(
             <Provider store={store}>
-                <App />
+                <StaticRouter location={req.url}>
+                    <App />
+                </StaticRouter>
             </Provider>
         );
     
