@@ -6,45 +6,79 @@ import { createStore } from 'redux';
 import { Provider } from 'react-redux';
 import App from '../client/components/app';
 import rootReducer from '../client/state/reducers/root';
+import apps from '../shared/app-structure';
+import * as repos from './repositories';
 
 const app = Express();
 const port = 1337;
 
+const defaultApp = apps.find(app => app.default);
+
 app.use('/build', Express.static(path.join(__dirname, '../client')));
 
-app.use((req, res) => {
-    const store = createStore(rootReducer);
-    const initState = store.getState();
-
-    const reactHtml = renderToString(
-        <Provider store={store}>
-            <App />
-        </Provider>
-    );
-
-    const html = `
-        <!doctype html>
-        <html>
-        <head>
-            <title>Runesmith - Software Developer</title>
-        </head>
-        <body>
-            <div id="root">${reactHtml}</div>
-            <script>
-            // WARNING: See the following for security issues around embedding JSON in HTML:
-            // http://redux.js.org/recipes/ServerRendering.html#security-considerations
-            window.__PRELOADED_STATE__ = ${JSON.stringify(initState).replace(
-                /</g,
-                '\\u003c'
-            )}
-            </script>
-            <script src="/build/main.js"></script>
-        </body>
-        </html>
-    `;
-
-    res.send(html);
+app.get('', (req, res) => {
+    serveApp(defaultApp)(req, res);
 });
+
+app.get('/:app', (req, res) => {
+    const selectedApp = getAppByIdentifier(req.params.app);
+
+    if (!selectedApp) {
+        res.status(404);
+        res.send();
+    }
+    else {
+        serveApp(selectedApp)(req, res);
+    }
+});
+
+const getAppByIdentifier = (identifier) => {
+    return apps.find(x => x.identifier === identifier);
+}
+
+const serveApp = (app) => (req, res) => {
+    const { 
+        [app.identifier]: {
+            getAll = () => new Promise(resolve => resolve([]))
+        } = {}
+    } = repos;
+
+    getAll().then(serverData => {
+        const store = createStore(rootReducer, {
+            [app.identifier]: { serverData }
+        });
+        const initState = store.getState();
+    
+        const reactHtml = renderToString(
+            <Provider store={store}>
+                <App />
+            </Provider>
+        );
+    
+        const html = `
+            <!doctype html>
+            <html>
+            <head>
+                <title>Runesmith - Software Developer</title>
+            </head>
+            <body>
+                <div id="root">${reactHtml}</div>
+                <script>
+                // WARNING: See the following for security issues around embedding JSON in HTML:
+                // http://redux.js.org/recipes/ServerRendering.html#security-considerations
+                window.__PRELOADED_STATE__ = ${JSON.stringify(initState).replace(
+                    /</g,
+                    '\\u003c'
+                )}
+                </script>
+                <script src="/build/main.js"></script>
+            </body>
+            </html>
+        `;
+    
+        res.send(html);
+    })
+}
 
 app.post('/api/repository', (req, res) => {
 
