@@ -1,5 +1,6 @@
 import Express from 'express';
 import path from 'path';
+import bodyParser from 'body-parser';
 import React from 'react'
 import { renderToString } from 'react-dom/server';
 import { createStore } from 'redux';
@@ -16,6 +17,7 @@ const port = 1337;
 const defaultApp = apps.find(app => app.default);
 
 app.use('/build', Express.static(path.join(__dirname, '../client')));
+app.use(bodyParser.json());
 
 app.get('', (req, res) => {
     serveApp(defaultApp)(req, res);
@@ -84,7 +86,20 @@ const serveApp = (app) => (req, res) => {
 }
 
 app.post('/api/repository', (req, res) => {
+    const { appIdentifier } = req.body;
 
+    const { 
+        [appIdentifier]: {
+            getAll = () => new Promise(resolve => resolve([]))
+        } = {}
+    } = repos;
+
+    getAll().then(serverData => {
+        res.send(serverData);
+    }, error => {
+        res.status(401);
+        res.send(error);
+    })
 });
 
 app.listen(port, () => {
